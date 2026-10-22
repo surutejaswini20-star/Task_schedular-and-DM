@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <meta name="supported-color-schemes" content="light">
+  <title>Task deadline reminder</title>
+</head>
+<body style="margin:0;padding:0;background:#f3f5fb;font-family:Arial,Helvetica,sans-serif;color:#20243a;">
+  <div style="display:none;font-size:1px;color:#f3f5fb;line-height:1px;max-height:0;max-width:0;opacity:0;overflow:hidden;">
+    A quick heads-up about your upcoming task deadline.
+  </div>
+  <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="background:#f3f5fb;">
+    <tr><td align="center" style="padding:32px 12px;">
+      <table role="presentation" width="600" cellspacing="0" cellpadding="0" border="0" style="width:100%;max-width:600px;background:#ffffff;border:1px solid #e4e8f2;border-radius:18px;overflow:hidden;">
+        <tr><td style="padding:28px 32px;background:#252746;">
+          <p style="margin:0 0 8px;font-size:12px;line-height:18px;font-weight:bold;letter-spacing:2px;text-transform:uppercase;color:#c8cbff;">YOUR STUDY SPACE</p>
+          <h1 style="margin:0;font-size:25px;line-height:1.3;color:#ffffff;font-weight:700;">A deadline is coming up</h1>
+          <p style="margin:10px 0 0;font-size:15px;line-height:1.6;color:#e2e5ff;">A small reminder now can save a last-minute rush later.</p>
+        </td></tr>
+        <tr><td style="padding:30px 32px 12px;">
+          <p style="margin:0 0 8px;font-size:15px;line-height:1.7;">Hi{% if user_name %} {{ user_name|e }}{% endif %},</p>
+          <p style="margin:0 0 22px;font-size:15px;line-height:1.75;color:#4c5268;">This is your reminder to make time for the task below. Review what remains, choose your next step, and give yourself enough time to finish.</p>
+          <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="border:1px solid #e4e8f2;border-radius:14px;">
+            <tr><td style="padding:20px 20px 16px;">
+              <p style="margin:0 0 7px;font-size:11px;font-weight:bold;letter-spacing:1.5px;text-transform:uppercase;color:#737991;">TASK</p>
+              <h2 style="margin:0 0 18px;font-size:21px;line-height:1.4;color:#252746;overflow-wrap:anywhere;">{{ task_title|e }}</h2>
+              <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0">
+                {% if subject %}
+                <tr><td style="padding:9px 0;border-top:1px solid #edf0f6;font-size:13px;color:#737991;width:34%;">Subject</td><td style="padding:9px 0;border-top:1px solid #edf0f6;font-size:14px;font-weight:bold;color:#292d46;">{{ subject|e }}</td></tr>
+                {% endif %}
+                <tr><td style="padding:9px 0;border-top:1px solid #edf0f6;font-size:13px;color:#737991;">Deadline</td><td style="padding:9px 0;border-top:1px solid #edf0f6;font-size:14px;font-weight:bold;color:#292d46;">{{ deadline|e }}</td></tr>
+                {% if priority %}
+                <tr><td style="padding:9px 0;border-top:1px solid #edf0f6;font-size:13px;color:#737991;">Priority</td><td style="padding:9px 0;border-top:1px solid #edf0f6;font-size:14px;font-weight:bold;color:#292d46;">{{ priority|e }}</td></tr>
+                {% endif %}
+                {% if duration %}
+                <tr><td style="padding:9px 0;border-top:1px solid #edf0f6;font-size:13px;color:#737991;">Planned time</td><td style="padding:9px 0;border-top:1px solid #edf0f6;font-size:14px;font-weight:bold;color:#292d46;">{{ duration }} minutes</td></tr>
+                {% endif %}
+              </table>
+            </td></tr>
+          </table>
+          {% if notes %}
+          <div style="margin:18px 0 0;padding:15px 17px;background:#f7f8fc;border-left:4px solid #7779e8;border-radius:8px;">
+            <p style="margin:0 0 5px;font-size:12px;font-weight:bold;color:#555b78;text-transform:uppercase;letter-spacing:1px;">Your notes</p>
+            <p style="margin:0;font-size:14px;line-height:1.7;color:#4c5268;white-space:pre-line;">{{ notes|e }}</p>
+          </div>
+          {% endif %}
+          <div style="margin:22px 0 8px;padding:16px 18px;background:#f0f2ff;border-radius:12px;">
+            <p style="margin:0;font-size:14px;line-height:1.7;color:#363b63;"><strong>Try this:</strong> spend two minutes deciding the very next action, then work in one focused block. Progress beats waiting for the perfect moment.</p>
+          </div>
+          <p style="margin:22px 0 0;font-size:14px;line-height:1.7;color:#4c5268;">You’ve got this—one focused step at a time.</p>
+        </td></tr>
+        <tr><td style="padding:22px 32px 28px;border-top:1px solid #edf0f6;">
+          <p style="margin:0;font-size:12px;line-height:1.7;color:#858aa0;">You received this message because a task reminder is scheduled in Your Study Space.</p>
+          <p style="margin:7px 0 0;font-size:12px;line-height:1.7;color:#858aa0;">Please do not reply to this automated email.</p>
+        </td></tr>
+      </table>
+    </td></tr>
+  </table>
+</body>
+</html>

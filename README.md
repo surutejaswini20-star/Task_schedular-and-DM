@@ -1,96 +1,312 @@
-# TaskScheduler and DeadlineManager — deployment-ready package
+# 🚀 Task Scheduler and Deadline Manager
 
-Flask application with PostgreSQL support, Celery reminders, and responsive HTML/CSS UI.
+A smart, responsive web application designed to help users organize tasks, manage study schedules, track deadlines, and receive timely email reminders.
 
-## Recommended hosting combination
+🌐 **Live Website:** [Task Scheduler and Deadline Manager](https://task-scheduling-and-deadline-manager.onrender.com/)
 
-- **Application + Celery worker + Celery Beat:** Render
-- **Database:** Neon PostgreSQL
-- **Redis/Celery broker:** Upstash Redis (TLS URL) or another managed Redis service
-- **Transactional email:** Brevo API
+---
 
-This is the closest fit to the current code because it already includes a `render.yaml`, Gunicorn, Celery worker/Beat processes, PostgreSQL's `psycopg` driver, and Brevo email integration. Render's background workers are separate services and may incur charges; check the current plans before deploying. The database and Redis are external managed services, so app redeploys do not rely on local filesystem persistence.
+## 📌 Overview
 
-## Before deploying
+Task Scheduler and Deadline Manager is a productivity application that helps users plan their tasks, organize study schedules, and stay on top of deadlines. It combines task management, automated scheduling, background processing, and email notifications in one platform.
 
-1. Create a Neon project and database.
-2. In Neon, copy the **pooled** connection string for the application. It should use a PostgreSQL URL and require SSL. SQLAlchemy converts `postgres://` / `postgresql://` schemes to `postgresql+psycopg://` automatically. Keep the URL private.
-3. Create a Redis database with TLS enabled. Copy its `rediss://...` URL. If the provider gives a `redis://` URL, use that only when the provider documents it as appropriate for your deployment.
-4. Create/verify a sender in Brevo and obtain its API key. Email verification and reminder delivery will not work until `BREVO_API_KEY` and `EMAIL_FROM` are set.
-5. Push this folder to a Git repository, excluding `.env`, virtual environments, caches, local databases, and generated Celery schedule files.
-6. In Render, choose **New + → Blueprint** and connect the repository containing `render.yaml`.
-7. Set the environment variables marked as manual inputs for the web, worker, and beat services:
-   - `DATABASE_URL`: Neon connection string
-   - `REDIS_URL`: managed Redis connection string
-   - `BREVO_API_KEY`: Brevo API key
-   - `EMAIL_FROM`: verified sender email
-   The Blueprint generates a `SECRET_KEY` for the web service. Keep all secrets out of source control.
-8. Deploy all three services. The web service has a `/health` health-check endpoint. Confirm that the web, Celery worker, and Celery Beat services all start successfully in Render logs.
+The application includes a responsive interface with dark and light themes, mobile-friendly navigation, authentication, and deadline validation.
 
-### Required environment variables
+## ✨ Features
 
-| Variable | Used by | Purpose |
-|---|---|---|
-| `SECRET_KEY` | Web | Session signing and OTP hashing |
-| `DATABASE_URL` | Web, worker, beat | Neon PostgreSQL connection |
-| `REDIS_URL` | Web, worker, beat | Celery broker and result backend |
-| `BREVO_API_KEY` | Web, worker | Sends verification and reminder emails |
-| `EMAIL_FROM` | Web, worker | Verified Brevo sender |
-| `COOKIE_SECURE` | Web | Keep `true` on HTTPS deployment |
-| `TRUST_PROXY` | Web | Set `true` behind Render's proxy |
-| `FLASK_DEBUG` | Web | Keep `false` in production |
+- **User Authentication:** Registration, email verification, login, and logout.
+- **Task Management:** Create, manage, complete, and delete tasks.
+- **Study Scheduling:** Organize study activities and deadlines.
+- **Automated Reminders:** Schedule reminders for upcoming tasks.
+- **Email Notifications:** Send verification emails and task reminders through Brevo.
+- **Background Processing:** Use Celery workers to process scheduled tasks.
+- **Periodic Scheduling:** Use Celery Beat to trigger recurring reminder jobs.
+- **PostgreSQL Database:** Store application data using Neon PostgreSQL.
+- **Responsive UI:** Adapt layouts for desktop, tablet, and mobile screens.
+- **Dark and Light Themes:** Switch between themes with browser preference persistence.
+- **Mobile Navigation:** Access the sidebar through a mobile navigation drawer.
+- **Input Validation:** Validate time formats, deadlines, and reminder schedules.
 
-`EMAIL_FROM_NAME` and `DISPOSABLE_EMAIL_DOMAINS` are optional. The included `render.yaml` configures the production flags.
+## 🛠️ Technology Stack
 
-## Local development
+| Category | Technologies |
+|---|---|
+| Backend | Python, Flask |
+| Frontend | HTML, CSS, JavaScript |
+| Database | PostgreSQL, Neon |
+| Task Queue | Celery |
+| Message Broker | Redis, Upstash |
+| Email Service | Brevo API |
+| Production Server | Gunicorn |
+| Deployment | Render |
+| Testing | Pytest |
 
-Python 3.11 is recommended.
+## 🏗️ System Architecture
 
-```bash
-python -m venv .venv
-# Windows PowerShell:
-.venv\\Scripts\\Activate.ps1
-# Git Bash / macOS / Linux:
-source .venv/bin/activate
+1. **User Interface:** Users register, log in, and manage tasks through the web application.
+2. **Flask Backend:** Handles authentication, task operations, validation, and application requests.
+3. **PostgreSQL Database:** Stores users, tasks, reminders, and related application records.
+4. **Redis Broker:** Transfers background task messages between the application and Celery.
+5. **Celery Worker:** Processes reminder and email-related background tasks.
+6. **Celery Beat:** Schedules periodic jobs, including recurring reminder checks.
+7. **Brevo API:** Delivers transactional emails and reminders.
+8. **Render:** Hosts the web application and background services.
 
-pip install -r requirements.txt
-copy .env.example .env
+## 🌐 Live Demo
+
+Visit the deployed application:
+
+**[Open Task Scheduler and Deadline Manager →](https://task-scheduling-and-deadline-manager.onrender.com/)**
+
+The application may take some time to respond if the hosting service is waking up after inactivity.
+
+## 📂 Project Structure
+
+```text
+Task-Scheduler-and-Deadline-Manager/
+├── app.py
+├── tasks.py
+├── scheduler.py
+├── requirements.txt
+├── Procfile
+├── render.yaml
+├── .env.example
+├── templates/
+├── static/
+├── tests/
+└── README.md
 ```
 
-Edit `.env` with a strong local `SECRET_KEY`. For local use, SQLite is the default. A local Redis server is required for Celery reminder delivery. Run the processes in separate terminals:
+*This is an illustrative structure. Adjust it to match the actual files and folders in your repository.*
+
+## ⚙️ Local Installation and Setup
+
+### Prerequisites
+
+- Python 3.11 recommended
+- Redis server
+- Git
+- PostgreSQL for production or SQLite for local development
+
+### 1. Clone the repository
+
+```bash
+git clone YOUR_GITHUB_REPOSITORY_URL
+cd YOUR_PROJECT_FOLDER
+```
+
+Replace the placeholders with your actual GitHub repository URL and folder name.
+
+### 2. Create a virtual environment
+
+**Windows PowerShell:**
+
+```powershell
+python -m venv .venv
+venv\Scripts\Activate.ps1
+```
+
+**Linux, macOS, or WSL:**
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+```
+
+### 3. Install dependencies
+
+```bash
+pip install -r requirements.txt
+```
+
+### 4. Configure environment variables
+
+Copy the example environment file.
+
+**Windows PowerShell:**
+
+```powershell
+Copy-Item .env.example .env
+```
+
+**Linux, macOS, or WSL:**
+
+```bash
+cp .env.example .env
+```
+
+Edit `.env` and configure the required values:
+
+```env
+SECRET_KEY=your_generated_secret
+FLASK_DEBUG=false
+COOKIE_SECURE=false
+TRUST_PROXY=false
+PORT=5000
+
+DATABASE_URL=sqlite:///study_scheduler.db
+REDIS_URL=redis://localhost:6379/0
+
+BREVO_API_KEY=
+EMAIL_FROM=
+EMAIL_FROM_NAME=TaskScheduler and DeadlineManager
+```
+
+Generate a secret key using:
+
+```bash
+python -c "import secrets; print(secrets.token_hex(32))"
+```
+
+Use a secure, unique key. Never commit your real `.env` file to GitHub.
+
+For local development, the SQLite database is used by default. Configure a suitable PostgreSQL connection string when using Neon.
+
+### 5. Start Redis
+
+Ensure that your Redis server is running and reachable at the address specified by `REDIS_URL`.
+
+Test a local Redis server with:
+
+```bash
+redis-cli ping
+```
+
+Expected response:
+
+```text
+PONG
+```
+
+### 6. Run the application
+
+Open separate terminals from the project root.
+
+**Terminal 1 — Flask application**
 
 ```bash
 python app.py
+```
+
+**Terminal 2 — Celery worker**
+
+```bash
 celery -A tasks.celery worker --loglevel=INFO --pool=solo
+```
+
+**Terminal 3 — Celery Beat scheduler**
+
+```bash
 celery -A tasks.celery beat --loglevel=INFO
 ```
 
-On Windows, `--pool=solo` is generally the simplest Celery worker pool for local development. In production, the Render worker uses the default process pool.
+On Windows, `--pool=solo` is generally a convenient option for local Celery worker development.
 
-## Validation
+Open the local URL printed by Flask, usually:
+
+`http://127.0.0.1:5000`
+
+## ☁️ Production Deployment
+
+The project is configured for deployment with Render, Neon PostgreSQL, Upstash Redis, and Brevo.
+
+### Recommended services
+
+| Service | Purpose |
+|---|---|
+| Render | Hosts the application and background processes |
+| Neon PostgreSQL | Persistent relational database |
+| Upstash Redis | Celery message broker |
+| Brevo | Transactional email delivery |
+
+### Deployment steps
+
+1. Push the project to a GitHub repository.
+2. Create a PostgreSQL database on Neon.
+3. Create a TLS-enabled Redis database on Upstash.
+4. Configure Brevo and verify the sender email address.
+5. Open the Render dashboard and choose **New → Blueprint**.
+6. Connect the repository containing `render.yaml`.
+7. Configure the required environment variables for the web, worker, and Beat services.
+8. Deploy the services and inspect their logs.
+
+### Required production environment variables
+
+| Variable | Purpose |
+|---|---|
+| `SECRET_KEY` | Session signing and OTP hashing |
+| `DATABASE_URL` | Neon PostgreSQL connection |
+| `REDIS_URL` | Redis broker and result backend |
+| `BREVO_API_KEY` | Brevo email API authentication |
+| `EMAIL_FROM` | Verified sender email address |
+| `COOKIE_SECURE` | Enable secure cookies over HTTPS |
+| `TRUST_PROXY` | Configure proxy-aware behavior |
+| `FLASK_DEBUG` | Keep debugging disabled in production |
+
+Use `COOKIE_SECURE=true`, `TRUST_PROXY=true`, and `FLASK_DEBUG=false` for the production configuration described by this project.
+
+Keep database credentials, API keys, and secret keys private. Do not commit them to source control.
+
+The web application, Celery worker, and Celery Beat scheduler must all start successfully for the complete reminder workflow to operate.
+
+**Hosting note:** Free hosting services may sleep or restart, potentially delaying scheduled reminders. Check the current service limits and pricing when choosing a production plan.
+
+## 🧪 Testing
+
+Run the available tests using:
 
 ```bash
 python -m pytest -q
 ```
 
-The included tests cover the scheduling algorithm. After deployment, manually verify registration/email OTP, login, task creation, completion/deletion, extra reminders, and daily digest delivery. Email functionality requires a working Brevo configuration and running Celery worker + Beat services.
+After deployment, manually test:
 
-## Notes
+- User registration and email verification
+- Login and logout
+- Task creation and updates
+- Task completion and deletion
+- Reminder creation and validation
+- Email reminder delivery
+- Periodic scheduling through Celery Beat
 
-- Tables are created automatically at app startup. For future schema changes, use formal database migrations rather than relying on `create_all`.
-- Neon connection strings and Redis URLs contain credentials; never commit them.
-- The app intentionally does not use a local SQLite database in production when `DATABASE_URL` is set.
+Email delivery requires valid Brevo configuration, while scheduled reminders require a functioning Redis broker and active Celery processes.
 
+## 📱 UI and Accessibility
 
-## UI enhancements included
+- Responsive layouts for desktop and mobile devices.
+- Dark and light theme switching.
+- Mobile sidebar navigation.
+- Accessible time-entry behavior.
+- Validation for malformed times and invalid deadline/reminder combinations.
+- Browser-local theme preference persistence.
 
-- **Dark / light theme toggle:** use the theme button in the top bar. Your preference is saved in browser local storage and persists across pages.
-- **Mobile left navigation drawer:** tap the hamburger button to open the left sidebar on phones and small screens. Tap the backdrop, choose a navigation item, or press Escape to close it.
-- **Logout:** the existing sign-out action remains in the sidebar account section and uses the application's POST + CSRF flow.
-- **Responsive layouts:** forms, task lists, navigation, and page spacing adapt to narrow screens.
-- **Time input accessibility:** time fields use a normal text keyboard on mobile instead of forcing the numeric keypad. Enter 24-hour `HH:MM` values such as `09:30` or `18:45`. Values outside `00:00`–`23:59`, malformed values, past deadlines, reminders in the past, and reminders at/after a task deadline are rejected with a validation message.
-- Existing authentication, email verification, task scheduling, reminders, and data model code are retained.
+Enter time values in 24-hour `HH:MM` format, such as `09:30` or `18:45`.
 
-## Theme and mobile navigation troubleshooting
+If theme changes do not appear immediately, try a hard refresh using `Ctrl + F5`.
 
-If the theme toggle does not appear to change after an update, hard-refresh the browser (`Ctrl+F5`). The theme preference is stored per browser. The mobile menu appears at viewport widths up to 850px.
+## 🔒 Security and Configuration
+
+- Keep `.env` and other credential files out of GitHub.
+- Use unique, strong secret keys.
+- Use TLS-enabled database and Redis connections in production.
+- Keep Flask debug mode disabled in production.
+- Use verified sender addresses for transactional email.
+- Use database migrations for future schema changes rather than relying only on automatic table creation.
+
+## 🚀 Future Enhancements
+
+- Calendar integration
+- Task priority analytics
+- Personalized study recommendations
+- Productivity statistics and progress reports
+- Additional scheduling and notification options
+
+## 👩‍💻 Author
+
+Developed as a task management and study productivity project.
+
+**Live Application:** [Task Scheduler and Deadline Manager](https://task-scheduling-and-deadline-manager.onrender.com/)
+
+---
+
+*Plan your tasks. Manage your deadlines. Stay productive.*
